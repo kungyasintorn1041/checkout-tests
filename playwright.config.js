@@ -5,7 +5,7 @@ module.exports = defineConfig({
   timeout: 30000,
   use: {
     baseURL: 'https://www.saucedemo.com', // ← แก้ตรงนี้
-    headless: false,   // ← false = เห็นหน้าต่าง browser
+    headless: true,   // ← false = เห็นหน้าต่าง browser
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
   },
