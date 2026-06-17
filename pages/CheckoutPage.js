@@ -4,7 +4,7 @@ class CheckoutPage {
 
     // Locators ของ saucedemo
     this.firstNameInput = page.locator('#first-name')
-    this.lastNameInput  = page.locator('#last-name')
+    this.lastNameInput  = page.locator('#last-name')   // เพิ่มเพื่อใช้ใน TC-008
     this.zipCodeInput   = page.locator('#postal-code')
     this.continueButton = page.locator('#continue')
     this.finishButton   = page.locator('#finish')
