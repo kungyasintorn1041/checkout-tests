@@ -1,18 +1,16 @@
-const { test, expect } = require('@playwright/test')
-const { CheckoutPage } = require('../../pages/CheckoutPage')
-const { LoginPage } = require('../../pages/LoginPage')
-const { USERS, CHECKOUT_INFO } = require('../../test-data/cards')
+import { test, expect } from '@playwright/test'
+import { CheckoutPage } from '../../pages/CheckoutPage'
+import { LoginPage }    from '../../pages/LoginPage'
+import { USERS, CHECKOUT_INFO } from '../../test-data/cards'
 
 test.describe('SCN-002: Validation — ข้อมูล checkout ไม่ครบ', () => {
 
-  let checkout
+  let checkout: CheckoutPage
 
   test.beforeEach(async ({ page }) => {
-    // ใช้ LoginPage แทน raw locator
     const loginPage = new LoginPage(page)
     await loginPage.login(USERS.standard.username, USERS.standard.password)
 
-    // เพิ่มสินค้า → cart → checkout
     await page.locator('.btn_primary').first().click()
     await page.locator('.shopping_cart_link').click()
     await page.locator('#checkout').click()
@@ -70,13 +68,10 @@ test.describe('SCN-005: problem_user — UI มีปัญหา', () => {
     const loginPage = new LoginPage(page)
     await loginPage.login(USERS.problem.username, USERS.problem.password)
 
-    // login ได้ — ต้องไปถึงหน้า inventory
     await expect(page).toHaveURL(/inventory/)
 
-    // problem_user จะมีรูปสินค้าที่ผิดปกติ (แสดงรูปสุนัขแทนสินค้า)
-    // ตรวจว่า src ของรูปแรกไม่ถูกต้อง — ไม่ควรมี "/static/media/"
     const firstImg = page.locator('.inventory_item img').first()
-    const src = await firstImg.getAttribute('src')
+    const src: string | null = await firstImg.getAttribute('src')
     expect(src).toContain('sl-404')
   })
 
@@ -85,20 +80,15 @@ test.describe('SCN-005: problem_user — UI มีปัญหา', () => {
     const loginPage = new LoginPage(page)
     await loginPage.login(USERS.problem.username, USERS.problem.password)
 
-    // เพิ่มสินค้า → cart → checkout
     await page.locator('.btn_primary').first().click()
     await page.locator('.shopping_cart_link').click()
     await page.locator('#checkout').click()
 
     const checkout = new CheckoutPage(page)
-
-    // problem_user: Last Name field จะไม่ยอมรับค่าที่พิมพ์
     await checkout.fillInfo(CHECKOUT_INFO.valid)
     await checkout.continue()
 
-    // ตรวจว่า Last Name ที่กรอกไปจริงๆ ถูก field รับหรือเปล่า
-    // (problem_user จะ error เพราะ field ถูก lock ไม่รับค่า)
-    const lastNameValue = await checkout.lastNameInput.inputValue()
+    const lastNameValue: string = await checkout.lastNameInput.inputValue()
     expect(lastNameValue).toBe('')
   })
 
